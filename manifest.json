@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
 
-  "name": "VPG Redmine",
-  "description": "Improve your redmine experience",
+  "name": "Redmine Bug Tracker",
+  "description": "Helps Tracking Bug within Redmine",
   "version": "1.0",
 
   "browser_action": {
