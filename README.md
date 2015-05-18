@@ -1,2 +1,4 @@
 # redchrome
-Redmine extension for chrome
+Redmine Chrome Extension
+
+The aim is to provide a chrome extension for bug tracking via chrome
