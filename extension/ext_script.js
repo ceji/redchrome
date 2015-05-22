@@ -8,13 +8,14 @@ $(document).ready(function () {
     }
     
     function displayProjectData(projectData) {
-        html = "<select>";
+        html = "<select id='project_id' class='ui search dropdown'>";
         $.each(projectData.projects, function ()
         {
             html += ("<option value='" + this.id + "'>" + this.name + "</option>");
         });
         html += "</select>";
-        $('#projects').append(html);
+        $('#projectsField').append(html);
+        $('#project_id').dropdown();
     }
 
     // Filling redmine projects
@@ -32,9 +33,10 @@ $(document).ready(function () {
     $('#submit').on('click', function() {
         var dataJson = {
             'issue' : {
-                'project_id'    : 1,
-                'subject'       : 'test',
-                'priority_id'   : 4
+                'project_id'    : $('#project_id').val(),
+                'tracker_id'    : $('#tracker_id').val(),
+                'subject'       : $('#subject').val(),
+                'priority_id'   : $('#priority_id').val()
             }
         };
         console.log('issue creation sent');
@@ -46,7 +48,6 @@ $(document).ready(function () {
             username    : 'cjimenez',
             password    : '%C3dr1c%',
             dataType    : 'json',
-//            beforeSend  : setHeader,
             success: function(msg) {
                 alert("success");
             },
@@ -57,4 +58,10 @@ $(document).ready(function () {
             }
         });
     });
+
+
+    // Init semantic
+    $('select.dropdown').dropdown();
+    console.log($('select.dropdown'));
+
 });
