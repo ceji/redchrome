@@ -31,11 +31,13 @@ $(document).ready(function () {
     
     // Submiting bug
     $('#submit').on('click', function() {
+
         var dataJson = {
             'issue' : {
                 'project_id'    : $('#project_id').val(),
                 'tracker_id'    : $('#tracker_id').val(),
                 'subject'       : $('#subject').val(),
+                'description'   : "User Agent : " + navigator.userAgent + "\n" + $('#description').val(),
                 'priority_id'   : $('#priority_id').val()
             }
         };
