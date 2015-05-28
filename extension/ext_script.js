@@ -1,5 +1,3 @@
-console.log("ext_script.js");
-
 $(document).ready(function () {
     var token = '';
 
@@ -20,7 +18,7 @@ $(document).ready(function () {
 
     // Filling redmine projects
     $.ajax({
-        url        : "https://redmine.bovpg.net/projects.json",
+        url        : "https://redmine.bovpg.net/projects.json?key=" + apiKey,
         crossDomain: true,
         dataType   : 'jsonp',
         type       : 'GET',
@@ -32,26 +30,34 @@ $(document).ready(function () {
     // Submiting bug
     $('#submit').on('click', function() {
 
+        var description = "";
+        description = description + "\nUser Agent : " + navigator.userAgent;
+        description = description + "\n" + $('#description').val();
+
         var dataJson = {
             'issue' : {
                 'project_id'    : $('#project_id').val(),
                 'tracker_id'    : $('#tracker_id').val(),
                 'subject'       : $('#subject').val(),
-                'description'   : "User Agent : " + navigator.userAgent + "\n" + $('#description').val(),
-                'priority_id'   : $('#priority_id').val()
+                'description'   : description,
+                'priority_id'   : $('#priority_id').val(),
+//                'custom_fields' : [
+//                    {'value' : 'test', 'id': 28}
+//                ]
             }
         };
         console.log('issue creation sent');
         $.ajax({
             type        : 'POST',
-            url         : "https://redmine.bovpg.net/issues.json?key=f0262b7a46ceaa96f8a46f0485219b094d6ee3de",
+            url         : "https://redmine.bovpg.net/issues.json?key=" + apiKey,
             data        : dataJson,
             crossDomain : true,
-            username    : 'cjimenez',
-            password    : '%C3dr1c%',
+            beforeSend : setHeader,
             dataType    : 'json',
-            success: function(msg) {
-                alert("success");
+            success: function(data) {
+                window.document.href = "http://redmine.bovpg.net/issues/" + data.issue.id;
+                console.log(data);
+                alert("success " + data);
             },
             error: function(xhr, msg, error) {
                 alert('error');
@@ -64,6 +70,5 @@ $(document).ready(function () {
 
     // Init semantic
     $('select.dropdown').dropdown();
-    console.log($('select.dropdown'));
 
 });
