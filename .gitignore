@@ -11,3 +11,7 @@ vendor/
 # composer.lock
 
 .idea
+.idea
+/_viminfo
+/.bash_history
+/.ssh/
