@@ -18,21 +18,33 @@
 
   </head>
   <body>
-	  <h2 class="ui header">Bug recorder</h1>
+
+
+      <div class="ui">
+
+          <i class="setting icon large circular floated left"></i>
+
+          <h2 class="ui header center aligned icon">
+              <i class="bug icon"></i>
+              <div class="content">
+                Bug recorder
+                <div class="sub header">The first Redmine bug recorder</div>
+              </div>
+          </h2>
+      </div>
+
+      <div class="ui divider clearing"></div>
+
       <div class="ui form" id="form">
 
           <div class="field" id='projectsField'>
-              <label>Projects</label>
+              <label>Project</label>
           </div>
 
-          <div class="field">
-            <label>Subject</label>
-            <input type="text" id="subject" />
-          </div>
 
           <div class="field">
               <label>Tracker</label>
-              <select id="tracker_id" class="ui search dropdown">
+              <select id="tracker_id" class="ui search dropdown" placeholder="Tracker">
                 <option value="1">Bug</option>
                 <option value="2">Evolution</option>
                 <option value="3">Assistance</option>
@@ -44,7 +56,7 @@
 
           <div class="field">
               <label>Priority</label>
-              <select id="priority_id" class="ui search dropdown">
+              <select id="priority_id" class="ui search dropdown" placeholder="Piority">
                 <option value="7"> Immediate(it blocks business)</option>
                 <option value="6">Urgent (it impacts business)</option>
                 <option value="5">High</option>
@@ -53,16 +65,25 @@
               </select>
           </div>
 
+          <div class="ui divider"></div>
+
           <div class="field">
-              <label>Description</label>
-              <textarea id="description" name="description"></textarea>
+            <input type="text" id="subject" name="Subject" placeholder="Subject"/>
+          </div>
+          <div class="field">
+              <textarea id="description" name="description" placeholder="Description"></textarea>
           </div>
 
           <div class="field">
-              <div class="ui submit button" id="submit">
-                Envoyer
-              </div>
+            <div class="ui blue labeled icon button" id="submit">
+                Create
+                <i class="add icon"></i>
+            </div>
           </div>
+
+
+
+
       </div>
   </body>
 </html>
