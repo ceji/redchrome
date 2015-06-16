@@ -1,5 +1,7 @@
 $(document).ready(function () {
     var token = '';
+    var apiKey = '';
+    var redmineUrl = '';
 
     function setHeader(xhr) {
         xhr.setRequestHeader('Authorization', token);
@@ -18,7 +20,7 @@ $(document).ready(function () {
 
     // Filling redmine projects
     $.ajax({
-        url        : "https://redmine.bovpg.net/projects.json?key=" + apiKey,
+        url        : redmineUrl + "/projects.json?key=" + apiKey,
         crossDomain: true,
         dataType   : 'jsonp',
         type       : 'GET',
@@ -41,21 +43,18 @@ $(document).ready(function () {
                 'subject'       : $('#subject').val(),
                 'description'   : description,
                 'priority_id'   : $('#priority_id').val(),
-//                'custom_fields' : [
-//                    {'value' : 'test', 'id': 28}
-//                ]
             }
         };
         console.log('issue creation sent');
         $.ajax({
             type        : 'POST',
-            url         : "https://redmine.bovpg.net/issues.json?key=" + apiKey,
+            url         : redmineUrl + "/issues.json?key=" + apiKey,
             data        : dataJson,
             crossDomain : true,
             beforeSend : setHeader,
             dataType    : 'json',
             success: function(data) {
-                window.document.href = "http://redmine.bovpg.net/issues/" + data.issue.id;
+                window.document.href = redmineUrl + "/issues/" + data.issue.id;
                 console.log(data);
                 alert("success " + data);
             },
@@ -67,8 +66,52 @@ $(document).ready(function () {
         });
     });
 
-
     // Init semantic
     $('select.dropdown').dropdown();
+
+    // Display Settings
+    $('#settings_btn').on('click', function() {
+        initSettings();
+        $('#form').fadeToggle();
+        $('#form_settings').slideToggle();
+
+    });
+
+    // Init settings from chrome storage
+    function initSettings() {
+        chrome.storage.sync.get('apiKey', function(result) {
+            $('#api_key').val(result.apiKey);
+            apiKey = result.apiKey;
+        });
+        chrome.storage.sync.get('redmineUrl', function(result) {
+            $('#redmine_url').val(result.redmineUrl);
+            redmineUrl = result.redmineUrl;
+        });
+    }
+
+    // Display the homepage
+    function displayHomePage() {
+        $('#form').fadeIn();
+        $('#form_settings').fadeOut();
+    }
+    // Record Settings
+    function saveSettings() {
+        var apiKey = $('#api_key').val();
+        var redmineUrl = $('#redmine_url').val();
+        chrome.storage.sync.set({'apiKey': apiKey});
+        chrome.storage.sync.set({'redmineUrl': redmineUrl});
+        $('div.ui.success.message').show();
+    }
+
+    $('i.close').on('click', function () {
+        $(this).parent().hide();
+    });
+    $('#settings_cancel').on('click', function() {
+        displayHomePage();
+    });
+    $('#settings_save').on('click', function() {
+        saveSettings();
+    });
+
 
 });
