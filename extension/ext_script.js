@@ -1,7 +1,25 @@
 $(document).ready(function () {
     var token = '';
-    var apiKey = '';
-    var redmineUrl = '';
+
+    // Get curren turl
+    var tablink;
+    chrome.tabs.getSelected(null,function(tab) {
+        tablink = tab.url;
+    });
+
+    // Init settings from chrome storage
+    function initSettings() {
+        var config = chrome.storage.sync.get('config', function(result) {
+            console.log(result);
+            $('#api_key').val(result.config.apiKey);
+            $('#redmine_url').val(result.config.redmineUrl);
+            getProjects(result.config.apiKey, result.config.redmineUrl);
+
+            return result.config;
+        });
+        return config;
+    }
+    var config = initSettings();
 
     function setHeader(xhr) {
         xhr.setRequestHeader('Authorization', token);
@@ -19,21 +37,24 @@ $(document).ready(function () {
     }
 
     // Filling redmine projects
-    $.ajax({
-        url        : redmineUrl + "/projects.json?key=" + apiKey,
-        crossDomain: true,
-        dataType   : 'jsonp',
-        type       : 'GET',
-        beforeSend : setHeader
-    }).then(function (projectData) {
-        displayProjectData(projectData);
-    });
+    function getProjects(apiKey, redmineUrl) {
+        $.ajax({
+            url        : redmineUrl + "/projects.json?key=" + apiKey,
+            crossDomain: true,
+            dataType   : 'jsonp',
+            type       : 'GET',
+            beforeSend : setHeader
+        }).then(function (projectData) {
+            displayProjectData(projectData);
+        });
+    }
     
     // Submiting bug
     $('#submit').on('click', function() {
 
         var description = "";
         description = description + "\nUser Agent : " + navigator.userAgent;
+        description = description + "\nUrl : " + tablink;
         description = description + "\n" + $('#description').val();
 
         var dataJson = {
@@ -46,17 +67,21 @@ $(document).ready(function () {
             }
         };
         console.log('issue creation sent');
+        config = {
+            'apiKey' : $('#api_key').val(),
+            'redmineUrl' : $('#redmine_url').val()
+        };
+        console.log(config);
         $.ajax({
             type        : 'POST',
-            url         : redmineUrl + "/issues.json?key=" + apiKey,
+            url         : config.redmineUrl + "/issues.json?key=" + config.apiKey,
             data        : dataJson,
             crossDomain : true,
             beforeSend : setHeader,
             dataType    : 'json',
             success: function(data) {
-                window.document.href = redmineUrl + "/issues/" + data.issue.id;
-                console.log(data);
-                alert("success " + data);
+                issueUrl = config.redmineUrl + "issues/" + data.issue.id;
+                alert("Issue created : " + issueUrl);
             },
             error: function(xhr, msg, error) {
                 alert('error');
@@ -71,23 +96,10 @@ $(document).ready(function () {
 
     // Display Settings
     $('#settings_btn').on('click', function() {
-        initSettings();
         $('#form').fadeToggle();
         $('#form_settings').slideToggle();
 
     });
-
-    // Init settings from chrome storage
-    function initSettings() {
-        chrome.storage.sync.get('apiKey', function(result) {
-            $('#api_key').val(result.apiKey);
-            apiKey = result.apiKey;
-        });
-        chrome.storage.sync.get('redmineUrl', function(result) {
-            $('#redmine_url').val(result.redmineUrl);
-            redmineUrl = result.redmineUrl;
-        });
-    }
 
     // Display the homepage
     function displayHomePage() {
@@ -98,8 +110,13 @@ $(document).ready(function () {
     function saveSettings() {
         var apiKey = $('#api_key').val();
         var redmineUrl = $('#redmine_url').val();
-        chrome.storage.sync.set({'apiKey': apiKey});
-        chrome.storage.sync.set({'redmineUrl': redmineUrl});
+        var config = {
+            'config' : {
+                'apiKey' : apiKey,
+                'redmineUrl' : redmineUrl
+            }
+        };
+        chrome.storage.sync.set(config);
         $('div.ui.success.message').show();
     }
 
