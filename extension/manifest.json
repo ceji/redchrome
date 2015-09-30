@@ -13,7 +13,8 @@
   "content_security_policy": "script-src 'self' https://ajax.googleapis.com https://redmine.bovpg.net; object-src 'self'",
 	
   "permissions": [
-    "activeTab",
-	"storage"
+      "activeTab",
+	  "storage",
+      "https://redmine.bovpg.net/"
   ]
 }

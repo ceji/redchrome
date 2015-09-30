@@ -1,4 +1,6 @@
 # redchrome
-Redmine Chrome Extension
+Redmine extension for chrome
 
-The aim is to provide a chrome extension for bug tracking via chrome
+This is a redmine extension for chrome users.
+
+It allowed to record a bug in redmine while you navigate the web.
